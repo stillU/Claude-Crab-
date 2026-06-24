@@ -1,13 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="/src/styles.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Claude Crab</title>
-    <script type="module" src="/src/main.ts" defer></script>
-  </head>
-  <body>
-    <canvas id="pet-canvas"></canvas>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; }
+    html, body { background: transparent; overflow: hidden; width: 128px; height: 128px; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="crab-canvas" width="128" height="128"></canvas>
+  <script type="module" src="/src/main.ts"></script>
+</body>
 </html>
