@@ -1,5 +1,4 @@
 import { invoke } from '@tauri-apps/api/core';
-import { CrabState } from './state-machine';
 
 export class PetWindow {
   private x: number = 0;
