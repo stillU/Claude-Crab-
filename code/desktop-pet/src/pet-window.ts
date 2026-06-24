@@ -47,6 +47,7 @@ export class PetWindow {
     }
 
     this.x = newX;
+    this.setWindowPosition(this.x, this.y);
   }
 
   nearEdge(): 'left' | 'right' | null {
