@@ -72,6 +72,7 @@ impl SignalListener {
         };
 
         std::thread::spawn(move || {
+            let _watcher = watcher; // keep watcher alive for the lifetime of this thread
             let mut last_event = Instant::now();
             for _ in rx {
                 let now = Instant::now();
