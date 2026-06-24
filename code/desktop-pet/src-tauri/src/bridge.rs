@@ -24,8 +24,8 @@ impl Bridge {
             return CrabStatus::Idle;
         }
 
-        // If signal file updated within last 10 seconds, trust it
-        if self.listener.seconds_since_last_read() < 10 {
+        // Check file modification time, not poll time
+        if self.listener.seconds_since_file_modified() < 10 {
             return self.listener.read_current_status().unwrap_or(CrabStatus::Idle);
         }
 

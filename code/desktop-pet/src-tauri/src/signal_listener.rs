@@ -1,6 +1,4 @@
-use notify::{Config, Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::PathBuf;
-use std::sync::mpsc;
 use std::time::{Duration, Instant};
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize, PartialEq)]
@@ -47,46 +45,17 @@ impl SignalListener {
         })
     }
 
-    pub fn watch<F>(&self, on_change: F) -> notify::Result<()>
-    where
-        F: Fn(CrabStatus) + Send + 'static,
-    {
-        let (tx, rx) = mpsc::channel();
-        let mut watcher = RecommendedWatcher::new(
-            move |res: Result<Event, notify::Error>| {
-                if let Ok(event) = res {
-                    if matches!(event.kind, EventKind::Modify(_)) {
-                        tx.send(()).ok();
-                    }
+    pub fn seconds_since_file_modified(&self) -> u64 {
+        match std::fs::metadata(&self.status_file) {
+            Ok(meta) => match meta.modified() {
+                Ok(mtime) => {
+                    let elapsed = mtime.elapsed().unwrap_or(Duration::from_secs(0));
+                    elapsed.as_secs()
                 }
+                Err(_) => u64::MAX,
             },
-            Config::default(),
-        )?;
-
-        let parent = self.status_file.parent().unwrap();
-        watcher.watch(parent, RecursiveMode::NonRecursive)?;
-
-        let mut listener = SignalListener {
-            status_file: self.status_file.clone(),
-            last_read: Instant::now(),
-        };
-
-        std::thread::spawn(move || {
-            let _watcher = watcher; // keep watcher alive for the lifetime of this thread
-            let mut last_event = Instant::now();
-            for _ in rx {
-                let now = Instant::now();
-                if now.duration_since(last_event) < Duration::from_millis(200) {
-                    continue;
-                }
-                last_event = now;
-                if let Some(status) = listener.read_current_status() {
-                    on_change(status);
-                }
-            }
-        });
-
-        Ok(())
+            Err(_) => u64::MAX,
+        }
     }
 
     pub fn seconds_since_last_read(&self) -> u64 {

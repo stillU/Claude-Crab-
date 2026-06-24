@@ -34,6 +34,15 @@ async function main() {
     animPlayer.registerClip(clip);
   }
 
+  // Preload all clips so they're ready before rendering
+  for (const clip of CLIPS) {
+    try {
+      await animPlayer.preload(clip.name);
+    } catch (e) {
+      console.warn(`Failed to preload ${clip.name}:`, e);
+    }
+  }
+
   // Init window position
   await petWindow.init();
 
