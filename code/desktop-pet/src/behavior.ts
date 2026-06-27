@@ -36,8 +36,6 @@ export class BehaviorScheduler {
   private state: CrabState = CrabState.Idle;
   private queue: BehaviorAction[] = [];
   private currentAction: BehaviorAction | null = null;
-  private actionStart: number = 0;
-  private actionDuration: number = 0;
   private randomTimer: number = 0;
   private lastIdleAction: string | null = null;
   private sleepApproaching: boolean = false;
@@ -86,9 +84,6 @@ export class BehaviorScheduler {
         this.queue = this.queue.filter(a => a !== override);
       } else if (this.currentAction === null && this.queue.length > 0) {
         this.currentAction = this.queue.shift()!;
-      }
-      if (this.currentAction) {
-        this.actionStart = performance.now();
       }
     }
 

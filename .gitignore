@@ -1,4 +1,6 @@
 .superpowers/
+.idea/
+.claude/
 node_modules/
 target/
 dist/
